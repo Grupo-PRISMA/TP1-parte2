@@ -11,8 +11,12 @@ public class Sugerencia {
 	private ArrayList<String> nombresAtracciones;
 	private double costo;
 	private double duracion;
+	private boolean esPromo;
+	private ArrayList<Integer> ids = new ArrayList<>();
 
 	public Sugerencia(Promocion promo) {
+		this.esPromo = true;
+		this.ids.add(promo.getId());
 		this.nombresAtracciones = this.extraerNombre(promo.getAtracciones());
 		this.costo = promo.getCostoTotal();
 		this.duracion = promo.getDuracionTotal();
@@ -22,6 +26,8 @@ public class Sugerencia {
 	}
 
 	public Sugerencia(Atraccion atraccion) {
+		this.esPromo = false;
+		this.ids.add(atraccion.getId());
 		this.nombresAtracciones = new ArrayList<>();
 		this.nombresAtracciones.add(atraccion.getNombre());
 		this.costo = atraccion.getCosto();
@@ -60,5 +66,13 @@ public class Sugerencia {
 		}
 
 		return false;
+	}
+	
+	public boolean esPromo() {
+		return this.esPromo;
+	}
+	
+	public ArrayList<Integer> getIds() {
+		return this.ids;
 	}
 }

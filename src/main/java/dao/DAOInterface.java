@@ -1,11 +1,9 @@
 package dao;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.ArrayList;
 
 public interface DAOInterface<T> {
 
-	public List<T> findAll() throws SQLException;
-
-	public int update(T t) throws SQLException;
+	public ArrayList<T> buscarTodo() throws SQLException;
 }

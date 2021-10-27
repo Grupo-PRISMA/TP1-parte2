@@ -2,28 +2,28 @@ package visitante;
 
 import java.util.Scanner;
 
-import atraccion.TipoDeAtraccion;
 import sugerencia.Sugerencia;
 
 public class Visitante {
+	private int id;
 	private String nombre;
 	private double presupuesto;
 	private double tiempoDisponibleHs;
-	private TipoDeAtraccion preferencia;
+	private String preferencia;
 
-	public Visitante(String nombre, TipoDeAtraccion preferencia, double presupuesto, double tiempoDisponibleHs) {
+	public Visitante(int id, String nombre, String preferencia, double presupuesto, double tiempoDisponibleHs) {
+		this.id = id;
 		this.nombre = nombre;
 		this.presupuesto = presupuesto;
 		this.tiempoDisponibleHs = tiempoDisponibleHs;
 		this.preferencia = preferencia;
-		//this.itinerario = new ArrayList<Sugerencia>();
 	}
 
 	public String getNombre() {
 		return this.nombre;
 	}
 
-	public TipoDeAtraccion getPreferencia() {
+	public String getPreferencia() {
 		return this.preferencia;
 	}
 
@@ -65,4 +65,7 @@ public class Visitante {
 				+ tiempoDisponibleHs + ", Preferencia = " + preferencia + "\n";
 	}
 
+	public int getId() {
+		return this.id;
+	}
 }

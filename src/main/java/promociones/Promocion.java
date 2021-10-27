@@ -1,24 +1,24 @@
 package promociones;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import atraccion.Atraccion;
-import atraccion.TipoDeAtraccion;
+import dao.DAO;
 
 public abstract class Promocion {
-	public static String TIPO_ABSOLUTA = "absoluta";
-	public static String TIPO_AxB = "AxB";
-	public static String TIPO_PORCENTUAL = "porcentual";
 
-	protected TipoDeAtraccion tipo;
+	protected int id;
+	protected String tipo;
 	protected ArrayList<Atraccion> atracciones = new ArrayList<>();
 
-	public Promocion(TipoDeAtraccion tipo, ArrayList<Atraccion> atracciones) {
+	public Promocion(int id, String tipo, ArrayList<Atraccion> atracciones) {
+		this.id = id;
 		this.tipo = tipo;
 		this.atracciones = atracciones;
 	}
 
-	public TipoDeAtraccion getTipo() {
+	public String getTipo() {
 		return this.tipo;
 	}
 
@@ -71,6 +71,13 @@ public abstract class Promocion {
 	public void bajarCupo() {
 		for (Atraccion atraccion : this.atracciones) {
 			atraccion.bajarCupo();
+			try {
+				DAO.getAtraccionDAO().actualizar(atraccion);
+			} catch (SQLException e) {
+				System.out.println("Error actualizando cupo de promocion " + this.id + ", atraccion " + atraccion.getId());
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -88,5 +95,9 @@ public abstract class Promocion {
 		String texto = this.nombreAtracciones().toString();
 
 		return texto;
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 }

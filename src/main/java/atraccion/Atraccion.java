@@ -1,13 +1,15 @@
 package atraccion;
 
-public class Atraccion implements Comparable<Atraccion> {
+public class Atraccion {
+	private int id;
 	private String nombre;
-	private TipoDeAtraccion tipo;
+	private String tipo;
 	private double costo;
 	private double duracionHs;
 	private int cupoPersonas;
 
-	public Atraccion(String nombre, TipoDeAtraccion tipo, double costo, double horas, int cupoPersonas) {
+	public Atraccion(int id, String nombre, String tipo, double costo, double horas, int cupoPersonas) {
+		this.id = id;
 		this.nombre = nombre;
 		this.tipo = tipo;
 		this.costo = costo;
@@ -19,7 +21,7 @@ public class Atraccion implements Comparable<Atraccion> {
 		return this.nombre;
 	}
 
-	public TipoDeAtraccion getTipo() {
+	public String getTipo() {
 		return this.tipo;
 	}
 
@@ -39,35 +41,17 @@ public class Atraccion implements Comparable<Atraccion> {
 		return this.cupoPersonas > 0;
 	}
 
-	
 	@Override
 	public String toString() {
 		return "Nombre = " + nombre + ", Tipo = " + tipo + ", Costo = " + costo + ", Duracion en Horas = " + duracionHs
 				+ ", Cupo Personas = " + cupoPersonas + "\n";
 	}
 
-	@Override
-	public int compareTo(Atraccion otraAtraccion) {
-		int resultado = 0;
-
-		if (this.getCosto() > otraAtraccion.getCosto()) {
-			resultado = -1;
-		} else if (this.getCosto() < otraAtraccion.getCosto()) {
-			resultado = 1;
-		} else {
-			if (this.getDuracion() > otraAtraccion.getDuracion()) {
-				resultado = -1;
-			} else if (this.getDuracion() < otraAtraccion.getDuracion()) {
-				resultado = 1;
-			} else {
-				resultado = 0;
-			}
-		}
-
-		return resultado;
-	}
-
 	public void bajarCupo() {
 		this.cupoPersonas--;
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 }

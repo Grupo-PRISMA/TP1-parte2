@@ -3,13 +3,12 @@ package promociones;
 import java.util.ArrayList;
 
 import atraccion.Atraccion;
-import atraccion.TipoDeAtraccion;
 
 public class PromocionAbsoluta extends Promocion {
 	private double descuento;
 
-	public PromocionAbsoluta(TipoDeAtraccion tipo, double descuento, ArrayList<Atraccion> atracciones) {
-		super(tipo, atracciones);
+	public PromocionAbsoluta(int id, String tipo, double descuento, ArrayList<Atraccion> atracciones) {
+		super(id, tipo, atracciones);
 		this.descuento = descuento;
 	}
 

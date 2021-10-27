@@ -3,13 +3,12 @@ package promociones;
 import java.util.ArrayList;
 
 import atraccion.Atraccion;
-import atraccion.TipoDeAtraccion;
 
 public class PromocionPorcentual extends Promocion {
 	private double descuento;
 
-	public PromocionPorcentual(TipoDeAtraccion tipo, double descuento, ArrayList<Atraccion> atracciones) {
-		super(tipo, atracciones);
+	public PromocionPorcentual(int id, String tipo, double descuento, ArrayList<Atraccion> atracciones) {
+		super(id, tipo, atracciones);
 		this.descuento = descuento;
 	}
 

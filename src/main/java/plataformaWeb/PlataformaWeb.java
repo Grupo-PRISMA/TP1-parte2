@@ -1,10 +1,12 @@
 package plataformaWeb;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import atraccion.Atraccion;
-import manejadorDeArchivos.EscrituraSalidaDeArchivos;
-import manejadorDeArchivos.LecturaDeArchivos;
+import dao.DAO;
+//import manejadorDeArchivos.EscrituraSalidaDeArchivos;
+//import manejadorDeArchivos.LecturaDeArchivos;
 import promociones.Promocion;
 import sugerencia.Sugerencia;
 import visitante.Visitante;
@@ -15,11 +17,15 @@ public class PlataformaWeb {
 	private ArrayList<Promocion> promociones;
 
 	public PlataformaWeb() {
-		LecturaDeArchivos manejadorArchivos = new LecturaDeArchivos();
-
-		this.atracciones = manejadorArchivos.getAtracciones();
-		this.visitantes = manejadorArchivos.getVisitantes();
-		this.promociones = manejadorArchivos.getPromociones();
+		
+		try {
+			this.atracciones = DAO.getAtraccionDAO().buscarTodo();
+			this.visitantes = DAO.getVisitanteDAO().buscarTodo();
+			this.promociones = DAO.getPromocionDAO().buscarTodo();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	private boolean validaRequisitos(Visitante visitante, boolean cupo, double costo, double duracion) {
@@ -27,22 +33,22 @@ public class PlataformaWeb {
 	}
 
 	private boolean validaRequisitosPromocionPreferencia(Visitante visitante, Promocion promocion) {
-		return visitante.getPreferencia() == promocion.getTipo() && this.validaRequisitos(visitante,
+		return visitante.getPreferencia().equalsIgnoreCase(promocion.getTipo()) && this.validaRequisitos(visitante,
 				promocion.hayCupo(), promocion.getCostoTotal(), promocion.getDuracionTotal());
 	}
 
 	private boolean validaRequisitosAtraccionPreferencia(Visitante visitante, Atraccion atraccion) {
-		return atraccion.getTipo() == visitante.getPreferencia()
+		return atraccion.getTipo().equalsIgnoreCase(visitante.getPreferencia())
 				&& this.validaRequisitos(visitante, atraccion.hayCupo(), atraccion.getCosto(), atraccion.getDuracion());
 	}
 
 	private boolean validaRequisitosPromocion(Visitante visitante, Promocion promocion) {
-		return promocion.getTipo() != visitante.getPreferencia() && this.validaRequisitos(visitante,
+		return !promocion.getTipo().equalsIgnoreCase(visitante.getPreferencia()) && this.validaRequisitos(visitante,
 				promocion.hayCupo(), promocion.getCostoTotal(), promocion.getDuracionTotal());
 	}
 
 	private boolean validaRequisitosAtraccion(Visitante visitante, Atraccion atraccion) {
-		return atraccion.getTipo() != visitante.getPreferencia()
+		return !atraccion.getTipo().equalsIgnoreCase(visitante.getPreferencia())
 				&& this.validaRequisitos(visitante, atraccion.hayCupo(), atraccion.getCosto(), atraccion.getDuracion());
 	}
 
@@ -54,21 +60,37 @@ public class PlataformaWeb {
 			System.out.println("\n");
 			System.out.println("Nombre de visitante: " + visitante.getNombre().toUpperCase());
 
-			ArrayList<Sugerencia> itinerario = this.crearSugerencias(visitante);
-			this.mostrarItinerario(visitante, itinerario);
-			this.guardarEnArchivoDeSalida(visitante, itinerario);
+			ArrayList<Sugerencia> itinerarioActual = new ArrayList<>();
+			
+			try {
+				itinerarioActual = DAO.getItinerarioDAO().buscarTodoPorIdVisitante(visitante.getId());
+				if (itinerarioActual.size() > 0) {
+					this.mostrarItinerario("PRE - ITINERARIO", visitante, itinerarioActual);
+				}
+			} catch (SQLException e) {
+				System.out.println("Error al recuperar itinerario inicial: " + e.getMessage());
+			}
+			System.out.println("-".repeat(50));
+			
+			ArrayList<Sugerencia> itinerario = this.crearSugerencias(visitante, itinerarioActual);
+			this.mostrarItinerario("\nITINERARIO FINAL", visitante, itinerario);
+			
+			try {
+				DAO.getVisitanteDAO().actualizar(visitante);
+				DAO.getItinerarioDAO().insertarParaVisitante(visitante, itinerario);		
+			} catch (SQLException e) {
+				System.out.println("Error al actualizar base de datos: " + e.getMessage());
+			}
 			System.out.println("-".repeat(100));
 			System.out.println("");
 		}
 	}
 
-	public void guardarEnArchivoDeSalida(Visitante visitante, ArrayList<Sugerencia> itinerario) {
-		EscrituraSalidaDeArchivos.salidaItinerario(visitante.getNombre() + ".txt",
-				this.datosItinerario(visitante, itinerario));
-	}
-
-	private ArrayList<Sugerencia> crearSugerencias(Visitante visitante) {
+	private ArrayList<Sugerencia> crearSugerencias(Visitante visitante, ArrayList<Sugerencia> itinerarioInicial) {
 		ArrayList<Sugerencia> sugerenciasAceptadas = new ArrayList<Sugerencia>();
+		for (Sugerencia sugerencia : itinerarioInicial) {
+			sugerenciasAceptadas.add(sugerencia);
+		}
 
 		sugerenciasAceptadas = this.crearSugerenciasConPreferencia(visitante, sugerenciasAceptadas);
 		sugerenciasAceptadas = this.crearSugerenciasSinPreferencia(visitante, sugerenciasAceptadas);
@@ -183,13 +205,13 @@ public class PlataformaWeb {
 		return sugerencias;
 	}
 
-	public String datosItinerario(Visitante visitante, ArrayList<Sugerencia> itinerario) {
+	public String datosItinerario(String titulo, Visitante visitante, ArrayList<Sugerencia> itinerario) {
 		double costoTotal = 0;
 		double duracionTotal = 0;
 		ArrayList<String> nombres = null;
 		String cadenaNombres = "";
 
-		String texto = "TU ITINERARIO\n" + "-".repeat(50);
+		String texto = titulo + "\n" + "-".repeat(50);
 		texto += "\n¡Hola " + visitante.getNombre() + "!\nBienvenida/o a La Guerra de las Galaxias";
 		texto += "\nEsperamos que disfrutes de nuestras atracciones";
 		texto += "\n" + "-".repeat(50);
@@ -218,8 +240,8 @@ public class PlataformaWeb {
 		return texto;
 	}
 
-	public void mostrarItinerario(Visitante visitante, ArrayList<Sugerencia> itinerario) {
-		System.out.println(this.datosItinerario(visitante, itinerario));
+	public void mostrarItinerario(String titulo, Visitante visitante, ArrayList<Sugerencia> itinerario) {
+		System.out.println(this.datosItinerario(titulo, visitante, itinerario));
 	}
 
 	@Override
