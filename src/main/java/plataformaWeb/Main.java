@@ -4,7 +4,7 @@ package plataformaWeb;
 public class Main {
 
 	public static void main(String[] args) {
-		/*System.out.println("               _________________      ____         __________\r\n"
+		System.out.println("               _________________      ____         __________\r\n"
 				+ " .       .    /                 |    /    \\    .  |          \\\r\n"
 				+ "     .       /    ______   _____| . /      \\      |    ___    |     .     .\r\n"
 				+ "             \\    \\    |   |       /   /\\   \\     |   |___>   |\r\n"
@@ -20,7 +20,7 @@ public class Main {
 				+ "           \\    /\\    /  /            \\   |   |\\    \\______>    |   .\r\n"
 				+ "            \\  /  \\  /  /    ______    \\  |   | \\              /          .\r\n"
 				+ " .       .   \\/    \\/  /____/      \\____\\ |___|  \\____________/  ");
-		*/
+		
 		PlataformaWeb plataforma = new PlataformaWeb();
 		plataforma.sugerir();
 		System.out.println("Ejecución terminada.");

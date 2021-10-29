@@ -12,26 +12,25 @@ import promociones.PromocionAxB;
 
 public class PromocionAxBTests {
 
-	/*@Test
+	@Test
 	public void verificarPromoGratis() {
-		LecturaDeArchivos manejadorArchivos = new LecturaDeArchivos();
-		ArrayList<Atraccion> atraccion = manejadorArchivos.getAtracciones();
-		Atraccion atraccionGratis = atraccion.get(5);
-		PromocionAxB promocionAxB = new PromocionAxB(TipoDeAtraccion.PAISAJE, atraccionGratis, atraccion);
+		Atraccion atraccionGratis = new Atraccion(7, "Naboo", "PAISAJE", 12, 3, 32);
+		PromocionAxB promocionAxB = new PromocionAxB(0, null, atraccionGratis, null);
 		assertEquals(atraccionGratis, promocionAxB.getAtraccionGratis());
 	}
-	
-	@Test 
+
+	@Test
 	public void tiempoDeDuracionTotal() {
-		LecturaDeArchivos manejadorArchivos = new LecturaDeArchivos();
-		ArrayList<Atraccion> atraccion = manejadorArchivos.getAtracciones();
-		Atraccion atraccionGratis = atraccion.get(5);
-		PromocionAxB promocionAxB = new PromocionAxB(TipoDeAtraccion.PAISAJE, atraccionGratis, atraccion);
-		double duracionPromocionGratis = atraccionGratis.getDuracion();
+		Atraccion a1 = new Atraccion(5, "Kashyyk", "PAISAJE", 5, 2, 15);
+		Atraccion a2 = new Atraccion(2, "Tatooine", "PAISAJE", 5, 2.5, 25);
+		ArrayList<Atraccion> atracciones = new ArrayList<>();
+		atracciones.add(a1);
+		atracciones.add(a2);
+		Atraccion atraccionGratis = new Atraccion(7, "Naboo", "PAISAJE", 12, 3, 32);
+		PromocionAxB promocionAxB = new PromocionAxB(3, "PAISAJE", atraccionGratis, atracciones);
 		double duracionPromoAxB = promocionAxB.getDuracionTotal();
-		double duracionTotal = duracionPromocionGratis + duracionPromoAxB;
-		assertEquals(duracionTotal, promocionAxB.getDuracionTotal(),2);
-	}*/
-	
+		assertEquals(duracionPromoAxB, promocionAxB.getDuracionTotal(), 0.0001);
+
+	}
 
 }
